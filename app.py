@@ -490,7 +490,7 @@ def order_details(order_id):
         if message:
             chat_message = ChatMessage(
                 sender_id=current_user.id,
-                receiver_id=order.user_id if current_user.is_manager else order.manager.user_id,
+                receiver_id=order.user_id if current_user.is_manager else None,  # Изменение: если менеджер, то получатель - None
                 order_id=order_id,
                 message=message,
             )
@@ -500,8 +500,8 @@ def order_details(order_id):
             return redirect(url_for('order_details', order_id=order_id)) 
 
     chat_messages = ChatMessage.query.filter_by(order_id=order_id).order_by(ChatMessage.timestamp.asc()).all()
-
     return render_template('order_details.html', order=order, messages=chat_messages)
+
 # Маршруты для менеджера
 @app.route('/manager')
 @login_required
@@ -639,7 +639,7 @@ def manager_order_details(order_id):
         if message:
             chat_message = ChatMessage(
                 sender_id=current_user.id,
-                receiver_id=order.user_id,
+                receiver_id=order.user_id, 
                 order_id=order_id,
                 message=message,
             )
@@ -666,9 +666,10 @@ def update_order_status(order_id):
         flash('Неверный статус заказа.', 'danger')
     return redirect(url_for('manager_order_details', order_id=order_id))
 
-# ... ваш код ...
-
-# ... ваш код ...
+@app.route('/about')
+def about():
+    """Страница "О нас" """
+    return render_template('about.html')
 
 @app.route('/download_contract/<int:order_id>')
 @login_required

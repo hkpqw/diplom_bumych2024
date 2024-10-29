@@ -8,14 +8,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" nonce="{{ nonce }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/product.tailwind.css') }}" nonce="{{ nonce }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}" nonce="{{ nonce }}">
-
-
 </head>
 <body class="bg-gray-100">
     <header class="bg-white shadow-md py-4">
         <div class="container mx-auto flex justify-between items-center">
             <a href="{{ url_for('index') }}" class="flex items-center">
-              
                 <span class="ml-2 text-xl font-bold">ООО "ВТТ"</span>
             </a>
             <nav>
@@ -32,17 +29,26 @@
                             {% endfor %}
                         </ul>
                     </li>
+                    <li><a href="{{ url_for('about') }}" class="hover:text-blue-500">О нас</a></li>
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('profile') }}" class="hover:text-blue-500">Профиль</a></li>
-                        <li><a href="{{ url_for('orders') }}" class="hover:text-blue-500">Заказы</a></li>
-                        <!-- Админ панель -->
-                        {% if current_user.is_admin %}
-                            <li><a href="{{ url_for('admin.index') }}" class="hover:text-blue-500">Flask Admin</a></li> 
-                        {% endif %}
-                        {% if current_user.is_manager %}
-                        <li><a href="/manager" class="hover:text-blue-500">Панель менеджера</a></li>
-                        {% endif %}
-                        <li><a href="{{ url_for('logout') }}" class="hover:text-blue-500">Выйти</a></li>
+                        <li class="relative">
+                            <button class="flex items-center hover:text-blue-500" id="profileDropdownButton">
+                                <i class="fas fa-user-circle"></i>
+                                <svg class="w-4 h-4 inline ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <ul id="profileDropdown" class="absolute hidden bg-white shadow-md mt-2 rounded-md">
+                                <li><a href="{{ url_for('profile') }}" class="block px-4 py-2 hover:bg-gray-100">Профиль</a></li>
+                                <li><a href="{{ url_for('orders') }}" class="block px-4 py-2 hover:bg-gray-100">Заказы</a></li>
+                                <!-- Админ панель -->
+                                {% if current_user.is_admin %}
+                                    <li><a href="{{ url_for('admin.index') }}" class="block px-4 py-2 hover:bg-gray-100">Flask Admin</a></li> 
+                                {% endif %}
+                                {% if current_user.is_manager %}
+                                    <li><a href="/manager" class="block px-4 py-2 hover:bg-gray-100">Панель менеджера</a></li>
+                                {% endif %}
+                                <li><a href="{{ url_for('logout') }}" class="block px-4 py-2 hover:bg-gray-100">Выйти</a></li>
+                            </ul>
+                        </li>
                     {% else %}
                         <li><a href="{{ url_for('login') }}" class="hover:text-blue-500">Войти</a></li>
                         <li><a href="{{ url_for('register') }}" class="hover:text-blue-500">Регистрация</a></li>
@@ -90,6 +96,13 @@
 
         categoryDropdownButton.addEventListener('click', () => {
             categoryDropdown.classList.toggle('hidden');
+        });
+
+        const profileDropdownButton = document.getElementById('profileDropdownButton');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        profileDropdownButton.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
         });
     </script>
 </body>
