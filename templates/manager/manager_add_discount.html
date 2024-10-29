@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Добавить скидку</h1>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            {{ form.product_id.label(class="form-control-label") }}
+            {{ form.product_id(class="form-control") }}
+            {% for error in form.product_id.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.discount_type.label(class="form-control-label") }}
+            {{ form.discount_type(class="form-control") }}
+            {% for error in form.discount_type.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.discount_value.label(class="form-control-label") }}
+            {{ form.discount_value(class="form-control") }}
+            {% for error in form.discount_value.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.start_date.label(class="form-control-label") }}
+            {{ form.start_date(class="form-control") }}
+            {% for error in form.start_date.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.end_date.label(class="form-control-label") }}
+            {{ form.end_date(class="form-control") }}
+            {% for error in form.end_date.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+</div>
+{% endblock %}

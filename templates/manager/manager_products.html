@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mx-auto mt-8">
+        <h1 class="text-3xl font-bold mb-4 text-gray-800">Управление товарами</h1>
+
+        <a href="/manager/products/add" 
+           class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4">
+            Добавить товар
+        </a>
+
+        <div class="overflow-x-auto">
+            <table class="table-auto w-full text-left whitespace-no-wrap">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Название</th>
+                        <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Описание</th>
+                        <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Цена</th>
+                        <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Категория</th>
+                        <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Изображение</th>
+                        <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td class="px-4 py-3">{{ product.name }}</td>
+                            <td class="px-4 py-3">{{ product.description }}</td>
+                            <td class="px-4 py-3">{{ product.price }} руб.</td>
+                            <td class="px-4 py-3">{{ product.category.name }}</td>
+                            <td class="px-4 py-3">
+                                {% if product.image %}
+                                    <img src="{{ url_for('static', filename='uploads/' + product.id|string + '/' + product.image) }}" 
+                                         class="w-24 h-20 object-cover rounded" alt="{{ product.name }}">
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3">
+                                <a href="/manager/products/{{ product.id }}/edit" 
+                                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2">
+                                    Редактировать
+                                </a>
+                                <form action="/manager/products/{{ product.id }}/delete" method="POST" class="inline-block">
+                                    <button type="submit" 
+                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Удалить
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

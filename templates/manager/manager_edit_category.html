@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto mt-8">
+    <h1 class="text-3xl font-bold mb-4 text-gray-800">Редактировать категорию: {{ category.name }}</h1>
+
+    <form method="POST" class="space-y-4">
+        {{ form.hidden_tag() }}
+
+        <div>
+            <label for="name" class="text-gray-700">Название:</label>
+            {{ form.name(class="block w-full px-3 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1 focus:border-blue-500", id="name") }}
+            {% for error in form.name.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Сохранить изменения</button>
+    </form>
+</div>
+{% endblock %}

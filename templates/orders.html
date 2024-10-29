@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mx-auto mt-8">
+        <h1 class="text-3xl font-bold mb-4 text-gray-800">История заказов</h1>
+
+        {% if orders %}
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full text-left whitespace-no-wrap">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Номер заказа</th>
+                            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Дата заказа</th>
+                            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Статус</th>
+                            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Товары</th>
+                            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Сумма</th>
+                            <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Детали</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            <tr>
+                                <td class="px-4 py-3">{{ order.id }}</td>
+                                <td class="px-4 py-3">{{ order.order_date.strftime('%d.%m.%Y %H:%M') }}</td>
+                                <td class="px-4 py-3">{{ order.status }}</td>
+                                <td class="px-4 py-3">
+                                    {% for item in order.items %}
+                                        {{ item.quantity }} x {{ item.product.name }}<br> 
+                                    {% endfor %}
+                                </td>
+                                <td class="px-4 py-3">{{ '%.2f' % order.total_price }} руб.</td>
+                                <td class="px-4 py-3">
+                                    <a href="{{ url_for('order_details', order_id=order.id) }}"
+                                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Детали
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-gray-600 text-lg">У вас пока нет заказов.</p>
+        {% endif %}
+    </div>
+{% endblock %}

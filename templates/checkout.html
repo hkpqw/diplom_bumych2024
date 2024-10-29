@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h1>Оформление заказа</h1>
+
+    {% if cart_items %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Товар</th>
+                <th>Количество</th>
+                <th>Цена</th>
+                <th>Сумма</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.product.price|round(2) }} руб.</td>
+                <td>{{ (item.product.price * item.quantity * (1 - (item.product.discount.discount_value / 100) if item.product.discount else 1)) | round(2) }} руб.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"><strong>Итого:</strong></td>
+                <td><strong>{{ total_price|round(2) }} руб.</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+  <form method="POST" action="{{ url_for('checkout') }}">
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        {{ form.address.label }}
+        {{ form.address(class_="form-control") }}
+        {% for error in form.address.errors %}
+          <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <div class="mb-3">
+        {{ form.payment_method.label }}
+        {{ form.payment_method(class_="form-control") }}
+      </div>
+
+      <button type="submit" class="btn btn-primary">Оформить заказ</button>
+    </form>
+
+    {% else %}
+    <p>Ваша корзина пуста.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

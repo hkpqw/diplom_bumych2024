@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ООО "ВТТ"{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" nonce="{{ nonce }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" nonce="{{ nonce }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/product.tailwind.css') }}" nonce="{{ nonce }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.min.css') }}" nonce="{{ nonce }}">
+
+
+</head>
+<body class="bg-gray-100">
+    <header class="bg-white shadow-md py-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{{ url_for('index') }}" class="flex items-center">
+              
+                <span class="ml-2 text-xl font-bold">ООО "ВТТ"</span>
+            </a>
+            <nav>
+                <ul class="flex space-x-6 text-gray-700">
+                    <li><a href="{{ url_for('index') }}" class="hover:text-blue-500">Главная</a></li>
+                    <li class="relative">
+                        <button class="hover:text-blue-500" id="categoryDropdownButton">
+                            Каталог товаров
+                            <svg class="w-4 h-4 inline ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <ul id="categoryDropdown" class="absolute hidden bg-white shadow-md mt-2 rounded-md">
+                            {% for category in categories %}
+                                <li><a href="{{ url_for('products_by_category', category_id=category.id) }}" class="block px-4 py-2 hover:bg-gray-100">{{ category.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('profile') }}" class="hover:text-blue-500">Профиль</a></li>
+                        <li><a href="{{ url_for('orders') }}" class="hover:text-blue-500">Заказы</a></li>
+                        <!-- Админ панель -->
+                        {% if current_user.is_admin %}
+                            <li><a href="{{ url_for('admin.index') }}" class="hover:text-blue-500">Flask Admin</a></li> 
+                        {% endif %}
+                        {% if current_user.is_manager %}
+                        <li><a href="/manager" class="hover:text-blue-500">Панель менеджера</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('logout') }}" class="hover:text-blue-500">Выйти</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}" class="hover:text-blue-500">Войти</a></li>
+                        <li><a href="{{ url_for('register') }}" class="hover:text-blue-500">Регистрация</a></li>
+                    {% endif %}
+                    <li>
+                        <a href="{{ url_for('cart') }}" class="flex items-center hover:text-blue-500">
+                            <i class="fas fa-shopping-cart"></i>
+                            {% if 'cart' in session and session['cart'] %}
+                                <span class="ml-2">({{ session['cart']|length }})</span> 
+                            {% endif %}
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="bg-{{ category == 'success' and 'green-100' or category == 'error' and 'red-100' or 'yellow-100' }} border border-{{ category == 'success' and 'green-400' or category == 'error' and 'red-400' or 'yellow-400' }} text-{{ category == 'success' and 'green-700' or category == 'error' and 'red-700' or 'yellow-700' }} px-4 py-3 rounded-md mb-4" role="alert">
+                        <strong class="font-bold">{{ category|title }}!</strong> 
+                        <span class="block sm:inline">{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-100 py-6 mt-8">
+        <div class="container mx-auto text-center">
+            <p class="text-gray-600">© {{ year }} Сморгонский агрегатный завод</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+   
+    <script>
+        const categoryDropdownButton = document.getElementById('categoryDropdownButton');
+        const categoryDropdown = document.getElementById('categoryDropdown');
+
+        categoryDropdownButton.addEventListener('click', () => {
+            categoryDropdown.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

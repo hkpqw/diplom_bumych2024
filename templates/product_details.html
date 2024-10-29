@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto mt-8">
+        <div class="flex flex-col md:flex-row gap-8">
+            <div class="w-full md:w-1/2">
+                <img src="{{ url_for('static', filename='uploads/' + product.id|string + '/' + product.image) }}" 
+                     class="rounded-lg shadow-2xl w-full h-96 object-cover" alt="{{ product.name }}">
+            </div>
+            <div class="w-full md:w-1/2">
+                <h1 class="text-4xl font-bold mb-4 text-gray-800">{{ product.name }}</h1>
+                <p class="text-lg text-gray-600 mb-6">{{ product.description }}</p>
+                <div class="flex items-center mb-4">
+                    <h2 class="text-3xl font-bold text-blue-500 mr-4">{{ product.price }} руб.</h2>
+                    <span class="text-gray-500 text-lg">В наличии</span>
+                </div>
+                <a href="{{ url_for('add_to_cart', product_id=product.id) }}" 
+                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline">
+                    Добавить в корзину
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

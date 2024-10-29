@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mx-auto mt-8">
+        <h1 class="text-3xl font-bold mb-4 text-gray-800">Детали заказа №{{ order.id }}</h1>
+
+        <div class="flex flex-col md:flex-row gap-8">
+            <div class="w-full md:w-1/2">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Информация о заказе</h2>
+                <p class="text-gray-600 mb-2"><strong>Дата заказа:</strong> {{ order.order_date.strftime('%d.%m.%Y %H:%M') }}</p>
+                <p class="text-gray-600 mb-2"><strong>Статус заказа:</strong> {{ order.status }}</p>
+                <p class="text-gray-600 mb-2"><strong>Адрес доставки:</strong> {{ order.address }}</p>
+                <p class="text-gray-600 mb-2"><strong>Способ оплаты:</strong> {{ order.payment_method }}</p>
+            </div>
+
+            <div class="w-full md:w-1/2">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Товары в заказе</h2>
+                <div class="overflow-x-auto">
+                    <table class="table-auto w-full text-left whitespace-no-wrap">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Товар</th>
+                                <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Количество</th>
+                                <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Цена</th>
+                                <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm">Сумма</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items %}
+                                <tr>
+                                    <td class="px-4 py-3">{{ item.product.name }}</td>
+                                    <td class="px-4 py-3">{{ item.quantity }}</td>
+                                    <td class="px-4 py-3">{{ item.product.price }} руб.</td>
+                                    <td class="px-4 py-3">{{ item.product.price * item.quantity }} руб.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="px-4 py-3 text-right font-bold">Итого:</td>
+                                <td class="px-4 py-3 text-right font-bold">{{ '%.2f' % order.total_price }} руб.</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/2">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Чат с менеджером</h2>
+                <div class="bg-gray-100 rounded-lg p-6 shadow-md">
+                    <p class="text-gray-600 mb-2">Здесь будет отображаться чат с менеджером.</p>
+                    <textarea class="w-full border rounded p-2" rows="5" placeholder="Введите сообщение..."></textarea>
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2">Отправить</button>
+                </div>
+                <a href="{{ url_for('download_contract', order_id=order.id) }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4">Скачать договор</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

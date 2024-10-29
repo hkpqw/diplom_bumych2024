@@ -1,0 +1,19 @@
+Договор поставки
+------------------
+
+Номер заказа: order_id
+Дата заказа: order_date
+
+Покупатель: customer_name
+Email покупателя: customer_email
+Адрес доставки: delivery_address
+Способ оплаты: payment_method
+
+Товары:
+
+| Название товара | Количество | Цена за единицу | Сумма |
+|---|---|---|---|
+| product_name | quantity | unit_price | total_amount |
+| ... | ... | ... | ... |
+
+Итого: total_price

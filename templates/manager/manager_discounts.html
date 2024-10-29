@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Управление скидками</h1>
+
+    <a href="/manager/discounts/add" class="btn btn-success mb-3">Добавить скидку</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Товар</th>
+                <th>Тип скидки</th>
+                <th>Размер скидки</th>
+                <th>Начало</th>
+                <th>Окончание</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for discount in discounts %}
+            <tr>
+                <td>{{ discount.product.name }}</td>
+                <td>{{ discount.discount_type }}</td>
+                <td>{{ discount.discount_value }}</td>
+                <td>{{ discount.start_date }}</td>
+                <td>{{ discount.end_date }}</td>
+                <td>
+                    <a href="/manager/discounts/{{ discount.id }}/edit" class="btn btn-primary btn-sm">Редактировать</a>
+                    <form action="/manager/discounts/{{ discount.id }}/delete" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

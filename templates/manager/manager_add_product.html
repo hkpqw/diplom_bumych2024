@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mx-auto mt-8">
+        <h1 class="text-3xl font-bold mb-4 text-gray-800">Добавить товар</h1>
+
+        <form method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-4">
+                {{ form.name.label(class_="block text-gray-700 text-sm font-bold mb-2") }}
+                {{ form.name(class_="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                {% for error in form.name.errors %}
+                    <p class="text-red-500 text-xs italic">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="mb-4">
+                {{ form.description.label(class_="block text-gray-700 text-sm font-bold mb-2") }}
+                {{ form.description(class_="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                {% for error in form.description.errors %}
+                    <p class="text-red-500 text-xs italic">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="mb-4">
+                {{ form.price.label(class_="block text-gray-700 text-sm font-bold mb-2") }}
+                {{ form.price(class_="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                {% for error in form.price.errors %}
+                    <p class="text-red-500 text-xs italic">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="mb-4">
+                {{ form.category_id.label(class_="block text-gray-700 text-sm font-bold mb-2") }}
+                {{ form.category_id(class_="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                {% for error in form.category_id.errors %}
+                    <p class="text-red-500 text-xs italic">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="mb-4">
+                {{ form.image.label(class_="block text-gray-700 text-sm font-bold mb-2") }}
+                {{ form.image(class_="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                {% for error in form.image.errors %}
+                    <p class="text-red-500 text-xs italic">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <button type="submit" 
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Добавить
+            </button>
+        </form>
+    </div>
+{% endblock %}
