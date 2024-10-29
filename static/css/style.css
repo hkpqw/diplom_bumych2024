@@ -39,3 +39,26 @@
   .product-info .button:hover {
     background-color: #0056b3;
   }
+
+
+  .chat-history {
+    height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.message {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+}
+
+.sent {
+    background-color: #e0f2f7;
+    text-align: right;
+}
+
+.received {
+    background-color: #f0f0f0;
+    text-align: left;
+}

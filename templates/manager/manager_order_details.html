@@ -43,7 +43,6 @@
       </div>
     </div>
   </div>
-
   <div class="mt-8">
     <h2 class="text-2xl font-bold mb-4 text-gray-800">Изменить статус заказа</h2>
     <form method="POST" action="{{ url_for('update_order_status', order_id=order.id) }}">
@@ -59,6 +58,32 @@
       </div>
       <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4">Обновить статус</button>
     </form>
+  </div>
+  <div class="mt-8">
+    <h2 class="text-2xl font-bold mb-4 text-gray-800">Чат с клиентом</h2>
+    <div class="bg-gray-100 rounded-lg p-6 shadow-md">
+      <div class="chat-history">
+        {% for message in messages %}
+          <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}">
+            <p class="text-gray-600 mb-2">
+              {{ message.timestamp.strftime('%d.%m.%Y %H:%M') }}
+              {% if message.sender_id == current_user.id %}
+                (Вы)
+              {% else %}
+                (Клиент)
+              {% endif %}
+            </p>
+            <p class="text-gray-800">{{ message.message }}</p>
+          </div>
+        {% endfor %}
+      </div>
+      <form method="POST" action="{{ url_for('manager_order_details', order_id=order.id) }}">
+        <div class="mt-4">
+          <textarea class="w-full border rounded p-2" name="message" rows="3" placeholder="Введите сообщение..."></textarea>
+        </div>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2">Отправить</button>
+      </form>
+    </div>
   </div>
 </div>
 {% endblock %}

@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
     is_admin = db.Column(db.Boolean, default=False)
     is_manager = db.Column(db.Boolean, default=False)
     orders = db.relationship('Order', backref='user', lazy=True)
-    cart_items = db.relationship('Cart', backref='user', lazy=True) # Добавлено отношение для корзины
+    cart_items = db.relationship('Cart', backref='user', lazy=True) 
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -37,6 +37,7 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False) 
     products = db.relationship('Product', backref='category', lazy=True)
+
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
@@ -48,7 +49,7 @@ class Product(db.Model):
     def average_rating(self):
         if self.reviews: 
             total_rating = sum(review.rating for review in self.reviews)
-            return total_rating / len(self.reviews)  # Возвращаем результат как float
+            return total_rating / len(self.reviews)  
         else:
             return 0
         
@@ -59,9 +60,12 @@ class Order(db.Model):
     status = db.Column(db.Enum('Новый', 'В обработке', 'Отправлен', 'Доставлен', 'Отменен'), default='Новый')
     items = db.relationship('OrderItem', backref='order', lazy=True)
     total_price = db.Column(db.DECIMAL(10, 2), nullable=True)
-    address = db.Column(db.String(255))  # Поле для адреса
-    payment_method = db.Column(db.String(255)) 
+    address = db.Column(db.String(255)) 
+    payment_method = db.Column(db.String(255))  
+    manager_id = db.Column(db.Integer, db.ForeignKey('manager.id'), nullable=True) # Связь с менеджером
     
+    manager = db.relationship('Manager', backref='orders') # Отношение для менеджера
+
 class OrderItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
@@ -78,7 +82,7 @@ class Cart(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
 
-    product = db.relationship('Product', backref='cart_items')  # Отношение для доступа к продукту из корзины
+    product = db.relationship('Product', backref='cart_items') 
 
 # Модель для менеджера
 class Manager(db.Model):
@@ -88,3 +92,14 @@ class Manager(db.Model):
 
     user = db.relationship('User', uselist=False, backref='manager')
 
+class ChatMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=db.func.now())
+
+    sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_messages')
+    receiver = db.relationship('User', foreign_keys=[receiver_id], backref='received_messages')
+    order = db.relationship('Order', backref='chat_messages')

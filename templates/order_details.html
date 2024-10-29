@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+
+</style>
     <div class="container mx-auto mt-8">
         <h1 class="text-3xl font-bold mb-4 text-gray-800">Детали заказа №{{ order.id }}</h1>
 
@@ -44,15 +47,42 @@
                     </table>
                 </div>
             </div>
+            
+        </div>
+        <a href="{{ url_for('download_contract', order_id=order.id) }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4">Скачать договор</a>
 
-            <div class="w-full md:w-1/2">
-                <h2 class="text-2xl font-bold mb-4 text-gray-800">Чат с менеджером</h2>
-                <div class="bg-gray-100 rounded-lg p-6 shadow-md">
-                    <p class="text-gray-600 mb-2">Здесь будет отображаться чат с менеджером.</p>
-                    <textarea class="w-full border rounded p-2" rows="5" placeholder="Введите сообщение..."></textarea>
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2">Отправить</button>
+
+        <div class="mt-8">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Чат с менеджером</h2>
+            <div class="bg-gray-100 rounded-lg p-6 shadow-md">
+                <div class="chat-history">
+                    {% for message in messages %}
+                        <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}">
+                            <p class="text-gray-600 mb-2">
+                                {{ message.timestamp.strftime('%d.%m.%Y %H:%M') }}
+                                {% if message.sender_id == current_user.id %}
+                                    (Вы)
+                                {% else %}
+                                    (
+                                        {% if message.sender.is_manager %}
+                                            Менеджер
+                                        {% else %}
+                                            {{ message.sender.first_name }} {{ message.sender.last_name }}
+                                        {% endif %}
+                                    )
+                                {% endif %}
+                            </p>
+                            <p class="text-gray-800">{{ message.message }}</p>
+                        </div>
+                    {% endfor %}
                 </div>
-                <a href="{{ url_for('download_contract', order_id=order.id) }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4">Скачать договор</a>
+
+                <form method="POST" action="{{ url_for('order_details', order_id=order.id) }}">
+                    <div class="mt-4">
+                        <textarea class="w-full border rounded p-2" name="message" rows="3" placeholder="Введите сообщение..."></textarea>
+                    </div>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2">Отправить</button>
+                </form>
             </div>
         </div>
     </div>

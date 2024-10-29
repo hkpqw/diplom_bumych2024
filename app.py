@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from models import db, User, Category, Product, Order, OrderItem, Cart, Manager
+from models import db, User, Category, Product, Order, OrderItem, Cart, Manager, ChatMessage
 from forms import LoginForm, RegistrationForm, UpdateProfileForm, AddProductForm, AddCategoryForm, EditProductForm, EditCategoryForm, OrderForm
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
@@ -477,15 +477,31 @@ def create_order():
         return redirect(url_for('index'))
 
 
-@app.route('/order/<int:order_id>')
+@app.route('/order/<int:order_id>', methods=['GET', 'POST'])  # Добавьте методы 'POST'
 @login_required
 def order_details(order_id):
     order = Order.query.get_or_404(order_id)
     if order.user_id != current_user.id and not current_user.is_admin:
         flash('У вас нет доступа к этому заказу.', 'danger')
         return redirect(url_for('index'))
-    return render_template('order_details.html', order=order)
 
+    if request.method == 'POST':
+        message = request.form['message']
+        if message:
+            chat_message = ChatMessage(
+                sender_id=current_user.id,
+                receiver_id=order.user_id if current_user.is_manager else order.manager.user_id,
+                order_id=order_id,
+                message=message,
+            )
+            db.session.add(chat_message)
+            db.session.commit()
+            flash('Сообщение отправлено', 'success')
+            return redirect(url_for('order_details', order_id=order_id)) 
+
+    chat_messages = ChatMessage.query.filter_by(order_id=order_id).order_by(ChatMessage.timestamp.asc()).all()
+
+    return render_template('order_details.html', order=order, messages=chat_messages)
 # Маршруты для менеджера
 @app.route('/manager')
 @login_required
@@ -612,14 +628,29 @@ def manager_orders():
     orders = Order.query.all()
     return render_template('manager/manager_orders.html', orders=orders)
 
-@app.route('/manager/orders/<int:order_id>')
+@app.route('/manager/orders/<int:order_id>', methods=['GET', 'POST']) # Добавьте POST
 @login_required
 @manager_required
 def manager_order_details(order_id):
     """Просмотр деталей заказа."""
     order = Order.query.get_or_404(order_id)
-    return render_template('manager/manager_order_details.html', order=order)
+    if request.method == 'POST':
+        message = request.form['message']
+        if message:
+            chat_message = ChatMessage(
+                sender_id=current_user.id,
+                receiver_id=order.user_id,
+                order_id=order_id,
+                message=message,
+            )
+            db.session.add(chat_message)
+            db.session.commit()
+            flash('Сообщение отправлено', 'success')
+            return redirect(url_for('manager_order_details', order_id=order_id)) 
 
+    chat_messages = ChatMessage.query.filter_by(order_id=order_id).order_by(ChatMessage.timestamp.asc()).all()
+
+    return render_template('manager/manager_order_details.html', order=order, messages=chat_messages)
 @app.route('/manager/orders/<int:order_id>/update_status', methods=['POST'])
 @login_required
 @manager_required
